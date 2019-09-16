@@ -12,6 +12,16 @@ public class FaceInfoEntity {
      */
     private String face_token;
 
+    private String ctime;
+
+    public String getCtime() {
+        return ctime;
+    }
+
+    public void setCtime(String ctime) {
+        this.ctime = ctime;
+    }
+
     public String getFace_token() {
         return face_token;
     }
@@ -24,6 +34,7 @@ public class FaceInfoEntity {
     public String toString() {
         return "FaceInfoEntity{" +
                 "face_token='" + face_token + '\'' +
+                ", ctime='" + ctime + '\'' +
                 '}';
     }
 }

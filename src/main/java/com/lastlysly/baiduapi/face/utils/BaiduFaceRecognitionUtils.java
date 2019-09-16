@@ -5,11 +5,10 @@ import com.baidu.aip.face.MatchRequest;
 import com.baidu.aip.util.Base64Util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 import com.lastlysly.baiduapi.face.apirequest.FaceOptionsParamEntity;
-import com.lastlysly.baiduapi.face.apiresponse.DetectFaceResult;
-import com.lastlysly.baiduapi.face.apiresponse.FaceDealCommonResponse;
-import com.lastlysly.baiduapi.face.apiresponse.MatchFaceResult;
-import com.lastlysly.baiduapi.face.apiresponse.SearchFaceResult;
+import com.lastlysly.baiduapi.face.apiresponse.*;
+import com.lastlysly.utils.CustomFileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -18,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author lastlySly
@@ -30,23 +31,37 @@ public class BaiduFaceRecognitionUtils {
 
     //private static final BASE64Decoder decoder = new BASE64Decoder();
     //需要修改为自己的
-    private static final String AppID = "*****";
-    private static final String APIKey = "*******";
-    private static final String SecretKey = "*******";
+//    private static final String AppID = "*****";
+//    private static final String APIKey = "*******";
+//    private static final String SecretKey = "*******";
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     private static Logger logger = LoggerFactory.getLogger(BaiduFaceRecognitionUtils.class);
 
-
     static AipFace client = null;
-    static {
-        client = new AipFace(AppID, APIKey, SecretKey);
-        // 可选：设置网络连接参数
-        client.setConnectionTimeoutInMillis(2000);
-        client.setSocketTimeoutInMillis(60000);
-    }
+//    static {
+//        client = new AipFace(AppID, APIKey, SecretKey);
+//        // 可选：设置网络连接参数
+//        client.setConnectionTimeoutInMillis(2000);
+//        client.setSocketTimeoutInMillis(60000);
+//    }
 
+    public BaiduFaceRecognitionUtils(String AppID, String APIKey, String SecretKey){
+//        if (client == null){
+        client = new AipFace(AppID, APIKey, SecretKey);
+//        }
+    }
+    public BaiduFaceRecognitionUtils(String AppID, String APIKey, String SecretKey,
+                                     int connectionTimeoutInMillis,int socketTimeoutInMillis){
+        client = new AipFace(AppID, APIKey, SecretKey);
+
+        client.setConnectionTimeoutInMillis(connectionTimeoutInMillis);
+        client.setSocketTimeoutInMillis(socketTimeoutInMillis);
+        // 可选：设置网络连接参数
+        //  client.setConnectionTimeoutInMillis(2000);
+        //  client.setSocketTimeoutInMillis(60000);
+    }
 
     /**
      * 人脸检测
@@ -55,8 +70,8 @@ public class BaiduFaceRecognitionUtils {
      * @return
      * @throws IOException
      */
-    public static FaceDealCommonResponse<DetectFaceResult> detectFace(File file, FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
-        return detectFace(FileToByte(file), faceOptionsParamEntity);
+    public FaceDealCommonResponse<DetectFaceResult> detectFace(File file, FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
+        return detectFace(CustomFileUtils.FileToByte(file), faceOptionsParamEntity);
     }
 
     /**
@@ -66,7 +81,7 @@ public class BaiduFaceRecognitionUtils {
      * @return
      * @throws IOException
      */
-    public static FaceDealCommonResponse<DetectFaceResult> detectFace(byte[] fileByte, FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
+    public FaceDealCommonResponse<DetectFaceResult> detectFace(byte[] fileByte, FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
         HashMap<String, String> options = new HashMap<String, String>();
         if (faceOptionsParamEntity != null){
             if (StringUtils.isNotBlank(faceOptionsParamEntity.getMax_face_num())){
@@ -110,8 +125,8 @@ public class BaiduFaceRecognitionUtils {
      * @param file2
      * @return
      */
-    public static FaceDealCommonResponse<MatchFaceResult> matchFace(File file1, File file2) throws IOException {
-        return matchFace(FileToByte(file1), FileToByte(file2));
+    public FaceDealCommonResponse<MatchFaceResult> matchFace(File file1, File file2) throws IOException {
+        return matchFace(CustomFileUtils.FileToByte(file1), CustomFileUtils.FileToByte(file2));
     }
 
     /**
@@ -123,7 +138,7 @@ public class BaiduFaceRecognitionUtils {
      *            人脸2
      * @return
      */
-    public static FaceDealCommonResponse<MatchFaceResult> matchFace(byte[] arg0, byte[] arg1) throws IOException {
+    public FaceDealCommonResponse<MatchFaceResult> matchFace(byte[] arg0, byte[] arg1) throws IOException {
         String imgStr1 = Base64Util.encode(arg0);
         String imgStr2 = Base64Util.encode(arg1);
         MatchRequest req1 = new MatchRequest(imgStr1, "BASE64");
@@ -158,10 +173,10 @@ public class BaiduFaceRecognitionUtils {
      * @return
      * @throws IOException
      */
-    public static FaceDealCommonResponse<SearchFaceResult> searchFace(File file, String groupIdList,
+    public FaceDealCommonResponse<SearchFaceResult> searchFace(File file, String groupIdList,
                                                                       FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
 
-        return searchFace(FileToByte(file), groupIdList,faceOptionsParamEntity);
+        return searchFace(CustomFileUtils.FileToByte(file), groupIdList,faceOptionsParamEntity);
     }
 
     /**
@@ -175,7 +190,7 @@ public class BaiduFaceRecognitionUtils {
      * @return
      * @throws IOException
      */
-    public static FaceDealCommonResponse<SearchFaceResult> searchFace(byte[] arg0, String groupIdList,
+    public FaceDealCommonResponse<SearchFaceResult> searchFace(byte[] arg0, String groupIdList,
                                                                       FaceOptionsParamEntity faceOptionsParamEntity)
             throws IOException {
 
@@ -231,25 +246,225 @@ public class BaiduFaceRecognitionUtils {
     }
 
 
+
     /**
-     * 文件转字节
+     * 人脸注册
      * @param file
+     * @param userId
+     * @param groupId
+     * @param faceOptionsParamEntity
      * @return
      * @throws IOException
      */
-    public static byte[] FileToByte(File file) throws IOException {
-        // 将数据转为流
-        @SuppressWarnings("resource")
-        InputStream content = new FileInputStream(file);
-        ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
-        byte[] buff = new byte[100];
-        int rc = 0;
-        while ((rc = content.read(buff, 0, 100)) > 0) {
-            swapStream.write(buff, 0, rc);
-        }
-        // 获得二进制数组
-        return swapStream.toByteArray();
+    public FaceDealCommonResponse<AddOrUpdateFaceResult> addUser(File file, String userId,
+                                             String groupId,FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
+
+        return addUser(CustomFileUtils.FileToByte(file), userId, groupId,faceOptionsParamEntity);
     }
+
+    /**
+     * 人脸注册
+     * @param arg0
+     * @param userId
+     * @param groupId
+     * @param faceOptionsParamEntity
+     * @return
+     * @throws IOException
+     */
+    public FaceDealCommonResponse<AddOrUpdateFaceResult> addUser(byte[] arg0, String userId,
+                                             String groupId,FaceOptionsParamEntity faceOptionsParamEntity)
+            throws IOException {
+        String imgStr = Base64Util.encode(arg0);
+        String imageType = "BASE64";
+        HashMap<String, String> options = new HashMap<String, String>();
+        if (faceOptionsParamEntity != null){
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getLiveness_control())) {
+                options.put("liveness_control", faceOptionsParamEntity.getLiveness_control());
+            }
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getAction_type())) {
+                options.put("action_type", faceOptionsParamEntity.getAction_type());
+            }
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getQuality_control())) {
+                options.put("quality_control", faceOptionsParamEntity.getQuality_control());
+            }
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getUser_info())) {
+                options.put("user_info", faceOptionsParamEntity.getUser_info());
+            }
+        }
+        JSONObject res = client.addUser(imgStr, imageType, groupId, userId,options);
+        System.out.println(res.toString(2));
+        /**
+         * 反序列化泛型，显式构建
+         */
+        FaceDealCommonResponse<AddOrUpdateFaceResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
+                new TypeReference<FaceDealCommonResponse<AddOrUpdateFaceResult>>(){});
+
+        logger.info("========人脸注册 start==========");
+        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info("========人脸注册 end==========");
+        return faceDealCommonResponse;
+    }
+
+
+    /**
+     * 人脸更新
+     * @param file
+     * @param userId
+     * @param groupId
+     * @param faceOptionsParamEntity
+     * @return
+     * @throws IOException
+     */
+    public FaceDealCommonResponse<AddOrUpdateFaceResult> updateUser(File file, String userId,
+                                                                 String groupId,FaceOptionsParamEntity faceOptionsParamEntity) throws IOException {
+
+        return updateUser(CustomFileUtils.FileToByte(file), userId, groupId,faceOptionsParamEntity);
+    }
+
+    /**
+     * 人脸更新
+     * @param arg0
+     * @param userId
+     * @param groupId
+     * @param faceOptionsParamEntity
+     * @return
+     * @throws IOException
+     */
+    public FaceDealCommonResponse<AddOrUpdateFaceResult> updateUser(byte[] arg0, String userId,
+                                                                 String groupId,FaceOptionsParamEntity faceOptionsParamEntity)
+            throws IOException {
+        String imgStr = Base64Util.encode(arg0);
+        String imageType = "BASE64";
+        HashMap<String, String> options = new HashMap<String, String>();
+        if (faceOptionsParamEntity != null){
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getLiveness_control())) {
+                options.put("liveness_control", faceOptionsParamEntity.getLiveness_control());
+            }
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getUser_info())) {
+                options.put("user_info", faceOptionsParamEntity.getUser_info());
+            }
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getQuality_control())) {
+                options.put("quality_control", faceOptionsParamEntity.getQuality_control());
+            }
+            if (StringUtils.isNotBlank(faceOptionsParamEntity.getAction_type())) {
+                options.put("action_type", faceOptionsParamEntity.getAction_type());
+            }
+
+        }
+        JSONObject res = client.updateUser(imgStr, imageType, groupId, userId,options);
+        /**
+         * 反序列化泛型，显式构建
+         */
+        FaceDealCommonResponse<AddOrUpdateFaceResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
+                new TypeReference<FaceDealCommonResponse<AddOrUpdateFaceResult>>(){});
+
+        logger.info("========人脸更新 start==========");
+        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info("========人脸更新 end==========");
+        return faceDealCommonResponse;
+    }
+
+
+
+    /**
+     * 删除用户人脸信息
+     *
+     * @param userId
+     * @param groupId
+     * @param faceToken
+     * @return
+     */
+    public FaceDealCommonResponse<AddOrUpdateFaceResult> deleteUserFace(String userId, String groupId,
+                                        String faceToken) throws IOException {
+        HashMap<String, String> options = new HashMap<String, String>();
+        // 人脸删除
+        JSONObject res = client.faceDelete(userId, groupId, faceToken, options);
+        /**
+         * 反序列化泛型，显式构建
+         */
+        FaceDealCommonResponse<AddOrUpdateFaceResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
+                new TypeReference<FaceDealCommonResponse<AddOrUpdateFaceResult>>(){});
+        logger.info("========人脸删除 start==========");
+        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info("========人脸删除 end==========");
+        return faceDealCommonResponse;
+    }
+
+    /**
+     * 查询用户信息
+     *
+     * @param userId
+     * @param groupId
+     * @return
+     */
+    public FaceDealCommonResponse<GetUserResult> getUserInfo(String userId, String groupId) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+        // 用户信息查询
+        JSONObject res = client.getUser(userId, groupId, options);
+
+        /**
+         * 反序列化泛型，显式构建
+         */
+        FaceDealCommonResponse<GetUserResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
+                new TypeReference<FaceDealCommonResponse<GetUserResult>>(){});
+        logger.info("========查询用户信息 start==========");
+        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info("========查询用户信息 end==========");
+        return faceDealCommonResponse;
+    }
+
+    /**
+     * 获取用户人脸列表
+     *
+     * @param userId
+     * @param groupId
+     * @return
+     */
+    public FaceDealCommonResponse<FaceGetlistResult> getUserFaceList(String userId, String groupId) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+        // 获取用户人脸列表
+        JSONObject res = client.faceGetlist(userId, groupId, options);
+        /**
+         * 反序列化泛型，显式构建
+         */
+        FaceDealCommonResponse<FaceGetlistResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
+                new TypeReference<FaceDealCommonResponse<FaceGetlistResult>>(){});
+        logger.info("========获取用户人脸列表 start==========");
+        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info("========获取用户人脸列表 end==========");
+        return faceDealCommonResponse;
+    }
+
+
+    /**
+     * 获取一组用户
+     * @param groupId 用户组id（由数字、字母、下划线组成），长度限制128B
+     * @param start 默认值0，起始序号
+     * @param returnNum 返回数量，默认值100，最大值1000
+     * @return
+     */
+    public FaceDealCommonResponse<GroupUsersListResult> getGroupUsers(String groupId,String start, String returnNum) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+
+        if (returnNum != null) {
+            options.put("length", returnNum);
+        }
+        if (start != null){
+            options.put("start", start);
+        }
+        // 获取用户列表
+        JSONObject res = client.getGroupUsers(groupId, options);
+        /**
+         * 反序列化泛型，显式构建
+         */
+        FaceDealCommonResponse<GroupUsersListResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
+                new TypeReference<FaceDealCommonResponse<GroupUsersListResult>>(){});
+        logger.info("========获取一组用户 start==========");
+        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info("========获取一组用户 end==========");
+        return faceDealCommonResponse;
+    }
+
 
 
 }
