@@ -21,7 +21,11 @@ public class TestDemo {
 //        test6();
 //        test7();
 //        test8();
-        test9();
+//        test9();
+//        test10();
+//        test11();
+//        test12();
+        test13();
     }
 
     /**
@@ -106,7 +110,7 @@ public class TestDemo {
      */
     public static void test6() {
         try {
-            FaceDealCommonResponse<AddOrUpdateFaceResult> res = BaiduFaceBuild.getBaiduFaceRecognitionUtils().deleteUserFace("1","test","fea55d9934039d5d091401424d8a489c");
+            FaceDealNullResultResponse res = BaiduFaceBuild.getBaiduFaceRecognitionUtils().deleteUserFace("2d0f50601ac644b382233cfdf8e549ac","test2","371c8d479dd990dc8863baaa49d63491");
             System.out.println(res);
         } catch (IOException e) {
             e.printStackTrace();
@@ -154,6 +158,66 @@ public class TestDemo {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 复制用户
+     */
+    public static void test10() {
+
+        FaceDealNullResultResponse res = null;
+        try {
+            res = BaiduFaceBuild.getBaiduFaceRecognitionUtils()
+                    .userCopy("2d0f50601ac644b382233cfdf8e549ac","test","test2");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(res);
+    }
+
+    /**
+     * 删除用户
+     */
+    public static void test11() {
+
+        FaceDealNullResultResponse res = null;
+        try {
+            res = BaiduFaceBuild.getBaiduFaceRecognitionUtils()
+                    .deleteUser("2d0f50601ac644b382233cfdf8e549ac","test2");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(res);
+    }
+
+    /**
+     * 创建用户组
+     */
+    public static void test12() {
+
+        FaceDealNullResultResponse res = null;
+        try {
+            res = BaiduFaceBuild.getBaiduFaceRecognitionUtils()
+                    .addGroup("test3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(res);
+    }
+
+    /**
+     * 删除用户组
+     */
+    public static void test13() {
+
+        FaceDealNullResultResponse res = null;
+        try {
+            res = BaiduFaceBuild.getBaiduFaceRecognitionUtils()
+                    .deleteGroup("test3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(res);
     }
 
 

@@ -374,20 +374,18 @@ public class BaiduFaceRecognitionUtils {
      * @param faceToken
      * @return
      */
-    public FaceDealCommonResponse<AddOrUpdateFaceResult> deleteUserFace(String userId, String groupId,
+    public FaceDealNullResultResponse deleteUserFace(String userId, String groupId,
                                         String faceToken) throws IOException {
         HashMap<String, String> options = new HashMap<String, String>();
         // 人脸删除
         JSONObject res = client.faceDelete(userId, groupId, faceToken, options);
-        /**
-         * 反序列化泛型，显式构建
-         */
-        FaceDealCommonResponse<AddOrUpdateFaceResult> faceDealCommonResponse = objectMapper.readValue(res.toString(),
-                new TypeReference<FaceDealCommonResponse<AddOrUpdateFaceResult>>(){});
+
+        FaceDealNullResultResponse faceDealNullResultResponse = objectMapper.readValue(res.toString(),
+                FaceDealNullResultResponse.class);
         logger.info("========人脸删除 start==========");
-        logger.info(faceDealCommonResponse.getError_msg());
+        logger.info(faceDealNullResultResponse.getError_msg());
         logger.info("========人脸删除 end==========");
-        return faceDealCommonResponse;
+        return faceDealNullResultResponse;
     }
 
     /**
@@ -465,6 +463,84 @@ public class BaiduFaceRecognitionUtils {
         return faceDealCommonResponse;
     }
 
+    /**
+     * 组用户复制
+     *
+     * @param userId
+     * @param srcGroupId
+     * @param dstGroupId
+     * @return
+     */
+    public FaceDealNullResultResponse userCopy(String userId, String srcGroupId,
+                                  String dstGroupId) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+        options.put("src_group_id", srcGroupId);
+        options.put("dst_group_id", dstGroupId);
+        // 复制用户
+        JSONObject res = client.userCopy(userId, options);
+        FaceDealNullResultResponse faceDealNullResultResponse = objectMapper.readValue(res.toString(),
+                FaceDealNullResultResponse.class);
+        logger.info("========组用户复制 start==========");
+        logger.info(faceDealNullResultResponse.getError_msg());
+        logger.info("========组用户复制 end==========");
+        return faceDealNullResultResponse;
+    }
+
+    /**
+     * 删除用户
+     *
+     * @param userId
+     * @param groupId
+     * @return
+     */
+    public FaceDealNullResultResponse deleteUser(String userId, String groupId) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+        // 删除用户
+        JSONObject res = client.deleteUser(groupId, userId, options);
+        FaceDealNullResultResponse faceDealNullResultResponse = objectMapper.readValue(res.toString(),
+                FaceDealNullResultResponse.class);
+        logger.info("========删除用户 start==========");
+        logger.info(faceDealNullResultResponse.getError_msg());
+        logger.info("========删除用户 end==========");
+        return faceDealNullResultResponse;
+    }
+
+    /**
+     * 创建用户组
+     *
+     * @param groupId
+     * @return
+     */
+    public FaceDealNullResultResponse addGroup(String groupId) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+        // 创建用户组
+        JSONObject res = client.groupAdd(groupId, options);
+        FaceDealNullResultResponse faceDealNullResultResponse = objectMapper.readValue(res.toString(),
+                FaceDealNullResultResponse.class);
+        logger.info("========创建用户组 start==========");
+        logger.info(faceDealNullResultResponse.getError_msg());
+        logger.info("========创建用户组 end==========");
+        return faceDealNullResultResponse;
+    }
+
+
+    /**
+     * 删除用户组
+     *
+     * @param groupId
+     * @return
+     */
+    public FaceDealNullResultResponse deleteGroup(String groupId) throws IOException {
+        HashMap<String, String> options = Maps.newHashMap();
+        // 创建用户组
+        JSONObject res = client.groupDelete(groupId, options);
+        FaceDealNullResultResponse faceDealNullResultResponse = objectMapper.readValue(res.toString(),
+                FaceDealNullResultResponse.class);
+        logger.info("========删除用户组 start==========");
+        logger.info(faceDealNullResultResponse.getError_msg());
+        logger.info("========删除用户组 end==========");
+        return faceDealNullResultResponse;
+    }
 
 
 }
