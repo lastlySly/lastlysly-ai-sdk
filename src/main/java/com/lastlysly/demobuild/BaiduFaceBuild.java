@@ -14,9 +14,9 @@ public class BaiduFaceBuild {
 
     //private static final BASE64Decoder decoder = new BASE64Decoder();
     //需要修改为自己的
-    private static final String AppID = "17194690";
-    private static final String APIKey = "bdKlBpTopnCNkgCYesdStz8u";
-    private static final String SecretKey = "sbb3wdb2U7S8BgAllQiIyntfRQMzS2Ge";
+    private static final String AppID = "*****";
+    private static final String APIKey = "*****";
+    private static final String SecretKey = "*****";
 
 
     public static BaiduFaceRecognitionUtils getBaiduFaceRecognitionUtils(){
